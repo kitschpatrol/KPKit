@@ -1,8 +1,8 @@
-#import "KPUtil.h"
+#import "KPUtilities.h"
 #import <UIKit/UIKit.h>
 #include <tgmath.h> // Type generic math to handle CGFloat
 
-@implementation KPUtil
+@implementation KPUtilities
 
 // Via C4
 + (CGFloat)map:(CGFloat)value fromMin:(CGFloat)min1 max:(CGFloat)max1 toMin:(CGFloat)min2 max:(CGFloat)max2

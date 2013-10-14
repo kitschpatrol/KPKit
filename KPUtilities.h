@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
 
-@interface KPUtil : NSObject
+@interface KPUtilities : NSObject
 
 // Handy math functions
 + (CGFloat)map:(CGFloat)value fromMin:(CGFloat)min1 max:(CGFloat)max1 toMin:(CGFloat)min2 max:(CGFloat)max2;
