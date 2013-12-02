@@ -1,6 +1,26 @@
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 @interface KPUtilities : NSObject
+
+// Credits...
+// http://matt.coneybeare.me/my-favorite-macros-for-objective-c-development-in-xcode/
+// https://github.com/mureev/ObjCMacros/blob/master/ObjCMacros/ObjCMacros.h
+// http://lists.apple.com/archives/xcode-users/2005/Dec/msg00707.html
+
+// Macros
+#define KP_IS_IPHONE            ([[[UIDevice currentDevice] model] isEqualToString: @"iPhone"])
+#define KP_IS_IPOD              ([[[UIDevice currentDevice] model] isEqualToString: @"iPod touch"])
+#define KP_IS_IPAD              ([[[UIDevice currentDevice] model] isEqualToString: @"iPad"])
+#define KP_IS_IPHONE_UI         ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPhone)
+#define KP_IS_IPAD_UI           ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad)
+#define KP_IS_WIDESCREEN        (fabs((double)[[UIScreen mainScreen] bounds].size.height - (double)568) < DBL_EPSILON)
+#define KP_IS_RETINA            ([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale] >= 2)
+#define KP_IS_MULTITASKING      ([[UIDevice currentDevice] respondsToSelector:@selector(isMultitaskingSupported)] && [[UIDevice currentDevice] isMultitaskingSupported])
+#define KP_COLOR_RGBA(r,g,b,a)  [UIColor colorWithRed:r/255.0f green:g/255.0f blue:b/255.0f alpha:a]
+#define KP_COLOR_RGB(r,g,b)     LP_RGBA(r, g, b, 1.0f)
+#define KP_COLOR_HEX(hex)       [UIColor colorWithRed: ((float)((hex & 0xFF0000) >> 16)) / 255.0 green: ((float)((hex & 0xFF00) >> 8)) / 255.0 blue: ((float)(hex & 0xFF)) / 255.0 alpha: 1.0]
+#define KP_LOG_FUNCTION         NSLog((@"%s (%s:%d)"), __PRETTY_FUNCTION__, ((strrchr(__FILE__, '/') ?: __FILE__ - 1) + 1), __LINE__);
 
 // Handy math functions
 + (CGFloat)map:(CGFloat)value fromMin:(CGFloat)min1 max:(CGFloat)max1 toMin:(CGFloat)min2 max:(CGFloat)max2;
