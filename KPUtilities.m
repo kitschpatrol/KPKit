@@ -2,6 +2,8 @@
 #import <UIKit/UIKit.h>
 #include <tgmath.h> // Type generic math to handle CGFloat
 
+// Pretty major mess... these should be moved to categories eventually.
+
 @implementation KPUtilities
 
 // Via C4
@@ -502,6 +504,36 @@ CGFloat easeInOutSine(CGFloat t,CGFloat b , CGFloat c, CGFloat d) {
     UIImage *img = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     return img;
+}
+
++ (NSURL *)documentDirectory {
+    return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
+}
+
++ (NSURL *)tempDirectory {
+    return [NSURL URLWithString:NSTemporaryDirectory()];
+}
+
++ (NSURL *)cacheDirectory {
+    return [[[NSFileManager defaultManager] URLsForDirectory:NSCachesDirectory inDomains:NSUserDomainMask] lastObject];
+}
+
+
++ (UIView *)firstSuperviewOfView:(UIView *)view thatIsKindOfClass:(__unsafe_unretained Class)someClass {
+    if (view.superview) {
+        if ([view.superview isKindOfClass:someClass]) {
+            // Found it
+            return view.superview;
+        }
+        else {
+            // Keep climbing recursively
+            return [self firstSuperviewOfView:view.superview thatIsKindOfClass:someClass];
+        }
+    }
+    else {
+        // Rached the top... no superview of the class we want
+        return nil;
+    }
 }
 
 

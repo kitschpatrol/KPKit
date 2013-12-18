@@ -9,9 +9,9 @@
 // http://lists.apple.com/archives/xcode-users/2005/Dec/msg00707.html
 
 // Macros
-#define KP_IS_IPHONE            ([[[UIDevice currentDevice] model] isEqualToString: @"iPhone"])
+#define KP_IS_IPHONE            ([[[UIDevice currentDevice] model] isEqualToString: @"iPhone"] || [[[UIDevice currentDevice] model] isEqualToString: @"iPhone Simulator"])
 #define KP_IS_IPOD              ([[[UIDevice currentDevice] model] isEqualToString: @"iPod touch"])
-#define KP_IS_IPAD              ([[[UIDevice currentDevice] model] isEqualToString: @"iPad"])
+#define KP_IS_IPAD              ([[[UIDevice currentDevice] model] isEqualToString: @"iPad"] || [[[UIDevice currentDevice] model] isEqualToString: @"iPad Simulator"])
 #define KP_IS_IPHONE_UI         ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPhone)
 #define KP_IS_IPAD_UI           ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad)
 #define KP_IS_WIDESCREEN        (fabs((double)[[UIScreen mainScreen] bounds].size.height - (double)568) < DBL_EPSILON)
@@ -33,6 +33,12 @@
 + (CGFloat)radiansInDegrees:(CGFloat)degreeValue;
 + (UIColor*)randomColor;
 + (UIColor*)randomColorWithAlpha:(CGFloat)alphaValue;
+
+
+// File functions
++ (NSURL *)documentDirectory;
++ (NSURL *)tempDirectory;
++ (NSURL *)cacheDirectory;
 
 // Easing functions in C
 CGFloat easeInBack(CGFloat t,CGFloat b , CGFloat c, CGFloat d);
@@ -120,5 +126,7 @@ CGFloat easeInOutSine(CGFloat t,CGFloat b , CGFloat c, CGFloat d);
 + (NSNumber *)standardDeviationOf:(NSArray *)array;
 
 + (UIImage *)imageFromColor:(UIColor *)color;
+
++ (UIView *)firstSuperviewOfView:(UIView *)view thatIsKindOfClass:(__unsafe_unretained Class)someClass;
 
 @end
