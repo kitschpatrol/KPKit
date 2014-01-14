@@ -48,7 +48,7 @@
 	else {
 		NSInteger max = a > b ? a : b;
 		NSInteger min = a < b ? a : b;
-		NSAssert(max-min > 0, @"Your expression returned true for max-min <= 0 for some reason... max = %d, min = %d", max, min);
+		NSAssert(max-min > 0, @"Your expression returned true for max-min <= 0 for some reason... max = %ld, min = %ld", (long)max, (long)min);
 		returnVal = (((NSInteger)arc4random())%(max-min) + min);
 	}
 	return returnVal;
