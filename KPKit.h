@@ -1,7 +1,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-@interface KPUtilities : NSObject
+@interface KPKit : NSObject
 
 // Credits...
 // http://matt.coneybeare.me/my-favorite-macros-for-objective-c-development-in-xcode/
