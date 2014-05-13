@@ -24,16 +24,20 @@
 
 // Handy math functions
 + (CGFloat)map:(CGFloat)value fromMin:(CGFloat)min1 max:(CGFloat)max1 toMin:(CGFloat)min2 max:(CGFloat)max2;
++ (double)mapDouble:(double)value fromMin:(double)min1 max:(double)max1 toMin:(double)min2 max:(double)max2;
 + (CGFloat)mapClamp:(CGFloat)value fromMin:(CGFloat)min1 max:(CGFloat)max1 toMin:(CGFloat)min2 max:(CGFloat)max2;
++ (double)clampDouble:(double)value betweenMin:(double)min max:(double)max;
 + (CGFloat)clamp:(CGFloat)value betweenMin:(CGFloat)min max:(CGFloat)max;
 + (CGFloat)lerpBetweenA:(CGFloat)a B:(CGFloat)b byAmount:(CGFloat)amount;
 + (NSInteger)randomInt:(NSInteger)value;
 + (NSInteger)randomIntBetweenA:(NSInteger)a andB:(NSInteger)b;
++ (CGFloat)randomBetweenA:(CGFloat)a andB:(CGFloat)b;
 + (CGFloat)degreesInRadians:(CGFloat)radianValue;
 + (CGFloat)radiansInDegrees:(CGFloat)degreeValue;
-+ (UIColor*)randomColor;
-+ (UIColor*)randomColorWithAlpha:(CGFloat)alphaValue;
-
++ (UIColor *)randomColor;
++ (UIColor *)colorWithAlpha:(UIColor *)color alpha:(CGFloat)alpha;
++ (UIColor *)randomColorWithAlpha:(CGFloat)alphaValue;
++ (UIColor *)randomBrightnessOfColor:(UIColor *)color;
 
 // File functions
 + (NSURL *)documentDirectory;
@@ -41,6 +45,15 @@
 + (NSURL *)cacheDirectory;
 
 // Easing functions in C
+
+
+CGFloat distanceBetweenCGPoint(CGPoint startPoint, CGPoint endPoint);
+CGFloat magnitudeOfVector(CGVector vector);
+bool CGVectorEqualToVector(CGVector vectorA, CGVector vectorB);
+
++ (UIColor *)color:(UIColor *)color withBrightness:(CGFloat)value;
+
+
 CGFloat easeInBack(CGFloat t,CGFloat b , CGFloat c, CGFloat d);
 CGFloat easeOutBack(CGFloat t,CGFloat b , CGFloat c, CGFloat d);
 CGFloat easeInOutBack(CGFloat t,CGFloat b , CGFloat c, CGFloat d);
@@ -128,5 +141,9 @@ CGFloat easeInOutSine(CGFloat t,CGFloat b , CGFloat c, CGFloat d);
 + (UIImage *)imageFromColor:(UIColor *)color;
 
 + (UIView *)firstSuperviewOfView:(UIView *)view thatIsKindOfClass:(__unsafe_unretained Class)someClass;
+
+
++ (void)clearTempDirectory;
++ (void)clearCacheDirectory;
 
 @end
