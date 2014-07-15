@@ -11,18 +11,20 @@
 // http://nshipster.com/__attribute__/
 
 // Macros
-#define KP_IS_IPHONE            ([[[UIDevice currentDevice] model] isEqualToString: @"iPhone"] || [[[UIDevice currentDevice] model] isEqualToString: @"iPhone Simulator"])
-#define KP_IS_IPOD              ([[[UIDevice currentDevice] model] isEqualToString: @"iPod touch"])
-#define KP_IS_IPAD              ([[[UIDevice currentDevice] model] isEqualToString: @"iPad"] || [[[UIDevice currentDevice] model] isEqualToString: @"iPad Simulator"])
-#define KP_IS_IPHONE_UI         ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPhone)
-#define KP_IS_IPAD_UI           ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad)
-#define KP_IS_WIDESCREEN        (fabs((double)[[UIScreen mainScreen] bounds].size.height - (double)568) < DBL_EPSILON)
-#define KP_IS_RETINA            ([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale] >= 2)
-#define KP_IS_MULTITASKING      ([[UIDevice currentDevice] respondsToSelector:@selector(isMultitaskingSupported)] && [[UIDevice currentDevice] isMultitaskingSupported])
-#define KP_COLOR_RGBA(r,g,b,a)  [UIColor colorWithRed:r/255.0f green:g/255.0f blue:b/255.0f alpha:a]
-#define KP_COLOR_RGB(r,g,b)     LP_RGBA(r, g, b, 1.0f)
-#define KP_COLOR_HEX(hex)       [UIColor colorWithRed: ((float)((hex & 0xFF0000) >> 16)) / 255.0 green: ((float)((hex & 0xFF00) >> 8)) / 255.0 blue: ((float)(hex & 0xFF)) / 255.0 alpha: 1.0]
-#define KP_LOG_FUNCTION         NSLog((@"%s (%s:%d)"), __PRETTY_FUNCTION__, ((strrchr(__FILE__, '/') ?: __FILE__ - 1) + 1), __LINE__);
+#define KP_IS_IPHONE ([[[UIDevice currentDevice] model] isEqualToString:@"iPhone"] || [[[UIDevice currentDevice] model] isEqualToString:@"iPhone Simulator"])
+#define KP_IS_IPOD ([[[UIDevice currentDevice] model] isEqualToString:@"iPod touch"])
+#define KP_IS_IPAD ([[[UIDevice currentDevice] model] isEqualToString:@"iPad"] || [[[UIDevice currentDevice] model] isEqualToString:@"iPad Simulator"])
+#define KP_IS_IPHONE_UI ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPhone)
+#define KP_IS_IPAD_UI ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad)
+#define KP_IS_WIDESCREEN (fabs((double)[[UIScreen mainScreen] bounds].size.height - (double)568) < DBL_EPSILON)
+#define KP_IS_RETINA ([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale] >= 2)
+#define KP_IS_MULTITASKING                                                                                                                                     \
+  ([[UIDevice currentDevice] respondsToSelector:@selector(isMultitaskingSupported)] && [[UIDevice currentDevice] isMultitaskingSupported])
+#define KP_COLOR_RGBA(r, g, b, a) [UIColor colorWithRed:r / 255.0f green:g / 255.0f blue:b / 255.0f alpha:a]
+#define KP_COLOR_RGB(r, g, b) LP_RGBA(r, g, b, 1.0f)
+#define KP_COLOR_HEX(hex)                                                                                                                                      \
+  [UIColor colorWithRed:((float)((hex & 0xFF0000) >> 16)) / 255.0 green:((float)((hex & 0xFF00) >> 8)) / 255.0 blue:((float)(hex & 0xFF)) / 255.0 alpha:1.0]
+#define KP_LOG_FUNCTION NSLog((@"%s (%s:%d)"), __PRETTY_FUNCTION__, ((strrchr(__FILE__, '/') ?: __FILE__ - 1) + 1), __LINE__);
 
 // Random (TODO convert to overloadable functions)
 + (NSInteger)randomInt:(NSInteger)value;
@@ -44,9 +46,15 @@
 + (void)clearCacheDirectory;
 
 // Foundation type helpers
-CGFloat KPDistanceBetweenCGPoint(CGPoint startPoint, CGPoint endPoint);
+
 CGFloat KPMagnitudeOfVector(CGVector vector);
 BOOL KPVectorEqualToVector(CGVector vectorA, CGVector vectorB);
+
+CGFloat KPAngleBetweenCGPoint(CGPoint startPoint, CGPoint endPoint);
+CGFloat KPDistanceBetweenCGPoint(CGPoint startPoint, CGPoint endPoint);
+CGPoint KPLinearInterpolateBetweenCGPoint(CGPoint startPoint, CGPoint endPoint, CGFloat amount);
+
+CGPoint KPPolarToCartesian(CGFloat theta, CGFloat radius);
 
 // Arrays
 + (id)randomObjectIn:(NSArray *)array;
@@ -142,8 +150,8 @@ long double __attribute__((overloadable)) KPInterpolateHermite(long double y0, l
 
 float __attribute__((overloadable)) KPInterpolateHermite(float y0, float y1, float y2, float y3, float pct, float tension, float bias);
 double __attribute__((overloadable)) KPInterpolateHermite(double y0, double y1, double y2, double y3, double pct, double tension, double bias);
-long double __attribute__((overloadable)) KPInterpolateHermite(long double y0, long double y1, long double y2, long double y3, long double pct, long double tension, long double bias);
-
+long double __attribute__((overloadable))
+KPInterpolateHermite(long double y0, long double y1, long double y2, long double y3, long double pct, long double tension, long double bias);
 
 // Easing (overloads generated via template_generator.py)
 float __attribute__((overloadable)) KPEaseInBack(float t, float b, float c, float d);
@@ -336,7 +344,8 @@ long double __attribute__((overloadable)) KPMapEaseOutElastic(long double value,
 
 float __attribute__((overloadable)) KPMapEaseInOutElastic(float value, float minIn, float maxIn, float minOut, float maxOut);
 double __attribute__((overloadable)) KPMapEaseInOutElastic(double value, double minIn, double maxIn, double minOut, double maxOut);
-long double __attribute__((overloadable)) KPMapEaseInOutElastic(long double value, long double minIn, long double maxIn, long double minOut, long double maxOut);
+long double __attribute__((overloadable))
+KPMapEaseInOutElastic(long double value, long double minIn, long double maxIn, long double minOut, long double maxOut);
 
 float __attribute__((overloadable)) KPMapEaseInExpo(float value, float minIn, float maxIn, float minOut, float maxOut);
 double __attribute__((overloadable)) KPMapEaseInExpo(double value, double minIn, double maxIn, double minOut, double maxOut);
