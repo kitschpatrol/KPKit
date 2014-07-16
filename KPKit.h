@@ -45,6 +45,9 @@
 + (void)clearTempDirectory;
 + (void)clearCacheDirectory;
 
+// Text
++ (void)drawText:(NSAttributedString *)text onPath:(UIBezierPath *)path inContext:(CGContextRef)context withAlignment:(NSTextAlignment)alignment;
+
 // Foundation type helpers
 
 CGFloat KPMagnitudeOfVector(CGVector vector);

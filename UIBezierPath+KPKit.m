@@ -83,7 +83,7 @@ static const BOOL KPInterpolateAngles = NO;          // Kind of weird, because u
     return CGPointZero;
   }
 
-  CGFloat exactIndex = KPClamp(percent, 0.0, 1.0) * ([self.kp_points count] - 1);
+  CGFloat exactIndex = KPClamp(percent, (CGFloat)0.0, (CGFloat)1.0) * ([self.kp_points count] - 1);
 
   if (KPInterpolatePoints) {
     CGFloat leftIndex = floor(exactIndex);
@@ -109,7 +109,7 @@ static const BOOL KPInterpolateAngles = NO;          // Kind of weird, because u
     return 0.0;
   }
 
-  CGFloat exactIndex = KPClamp(percent, 0.0, 1.0) * ([self.kp_angles count] - 1);
+  CGFloat exactIndex = KPClamp(percent, (CGFloat)0.0, (CGFloat)1.0) * ([self.kp_angles count] - 1);
 
   if (KPInterpolateAngles) {
     CGFloat leftIndex = floor(exactIndex);

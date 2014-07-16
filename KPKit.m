@@ -1,6 +1,9 @@
 #import "KPKit.h"
 #import <UIKit/UIKit.h>
 #include <tgmath.h> // Type generic math to handle CGFloat
+#include "UIBezierPath+KPKit.h"
+
+@import CoreText;
 
 // Pretty major mess... these should (maybe) be moved into descrete classes and / or categories eventually.
 
@@ -89,6 +92,82 @@
     // Error, could not convert
     return color;
   }
+}
+
+#pragma mark - Text
+
++ (void)drawText:(NSAttributedString *)text onPath:(UIBezierPath *)path inContext:(CGContextRef)context withAlignment:(NSTextAlignment)alignment {
+  NSAssert((alignment != NSTextAlignmentJustified), @"Justified text alginment not supported for drawing text on a path.");
+  NSAssert((alignment != NSTextAlignmentNatural), @"Natural text alginment not supported for drawing text on a path.");
+
+  CGContextSaveGState(context);
+
+  CTLineRef line = CTLineCreateWithAttributedString((__bridge CFAttributedStringRef)text);
+  NSAssert(line != NULL, @"Problems creating core text line reference.");
+
+  CFArrayRef runArray = CTLineGetGlyphRuns(line);
+  CFIndex runCount = CFArrayGetCount(runArray);
+
+  // Go through each run
+  for (CFIndex runIndex = 0; runIndex < runCount; runIndex++) {
+    CTRunRef run = (CTRunRef)CFArrayGetValueAtIndex(runArray, runIndex);
+    CFIndex runGlyphCount = CTRunGetGlyphCount(run);
+    // CTFontRef runFont = CFDictionaryGetValue(CTRunGetAttributes(run), kCTFontAttributeName);
+
+    // Get all the glyph positions
+    CFRange allGlyphsInRunRange = CFRangeMake(0, runGlyphCount);
+    CGPoint glyphPositions[allGlyphsInRunRange.length];
+    CTRunGetPositions(run, CFRangeMake(0, runGlyphCount), glyphPositions);
+
+    // Align the text on the path with an offset
+    CGFloat runWidth = CTRunGetTypographicBounds(run, allGlyphsInRunRange, NULL, NULL, NULL);
+
+    CGFloat textOffset;
+    // Center it
+    switch (alignment) {
+      case NSTextAlignmentNatural:
+      case NSTextAlignmentJustified:
+      case NSTextAlignmentLeft:
+        textOffset = 0.0;
+        break;
+      case NSTextAlignmentRight:
+        textOffset = (path.kp_length - runWidth);
+        break;
+      case NSTextAlignmentCenter:
+        textOffset = (path.kp_length - runWidth) / 2;
+        break;
+    }
+
+    for (CFIndex runGlyphIndex = 0; runGlyphIndex < runGlyphCount; runGlyphIndex++) {
+      // Get position the glyph would have had in a normally presented string
+      // This ensures that we have kerning and other details correct
+      CGPoint glyphPosition = glyphPositions[runGlyphIndex];
+
+      // The "origin" seems to be in the bottom left by default. Compensate for the width of the glyph.
+      CFRange glyphRange = CFRangeMake(runGlyphIndex, 1);
+      CGFloat glyphWidth = CTRunGetTypographicBounds(run, glyphRange, NULL, NULL, NULL);
+      glyphPosition.x = glyphPosition.x + (glyphWidth / 2);
+
+      // Find point and angle on the line at corresponding position
+      CGPoint pointOnPath = [path kp_pointAtLength:glyphPosition.x + textOffset];
+      CGFloat angleOnPath = [path kp_angleAtLength:glyphPosition.x + textOffset];
+
+      // A bunch of hairy transforms.
+      CGAffineTransform runOffsetMatrix = CGAffineTransformTranslate(CGAffineTransformIdentity, -(glyphPosition.x), 0.0);
+      CGAffineTransform flipMatrix = CGAffineTransformMakeScale(1.0, -1.0);
+      CGAffineTransform lineRotationMatrix = CGAffineTransformRotate(CGAffineTransformIdentity, angleOnPath);
+      CGAffineTransform linePositionMatrix = CGAffineTransformTranslate(CGAffineTransformIdentity, pointOnPath.x, pointOnPath.y);
+
+      CGAffineTransform textMatrix =
+          CGAffineTransformConcat(CGAffineTransformConcat(CGAffineTransformConcat(runOffsetMatrix, flipMatrix), lineRotationMatrix), linePositionMatrix);
+      CGContextSetTextMatrix(context, textMatrix);
+      // TODO restore text matrix?
+
+      CTRunDraw(run, context, glyphRange);
+    }
+  }
+
+  CGContextRestoreGState(context);
 }
 
 #pragma mark - File System
@@ -1591,11 +1670,12 @@ CGPoint KPPolarToCartesian(CGFloat theta, CGFloat radius) {
 #endif
 }
 
+// Hmm... clockwise rotation?
 CGFloat KPAngleBetweenCGPoint(CGPoint startPoint, CGPoint endPoint) {
 #if CGFLOAT_IS_DOUBLE
-  return atanf((endPoint.y - startPoint.y) / (endPoint.x - startPoint.x));
+  return -atan2(endPoint.x - startPoint.x, endPoint.y - startPoint.y) + M_PI_2;
 #else
-  return atan((endPoint.y - startPoint.y) / (endPoint.x - startPoint.x));
+  return -atan2f(endPoint.x - startPoint.x, endPoint.y - startPoint.y) + M_PI_2;
 #endif
 }
 
