@@ -28,6 +28,10 @@
   [UIColor colorWithRed:((float)((hex & 0xFF0000) >> 16)) / 255.0 green:((float)((hex & 0xFF00) >> 8)) / 255.0 blue:((float)(hex & 0xFF)) / 255.0 alpha:1.0]
 #define KP_LOG_FUNCTION NSLog((@"%s (%s:%d)"), __PRETTY_FUNCTION__, ((strrchr(__FILE__, '/') ?: __FILE__ - 1) + 1), __LINE__);
 
+// http://stackoverflow.com/questions/12198449/cross-platform-macro-for-silencing-unused-variables-warning/12199209#12199209
+#define KP_Internal_UnusedStringify(macro_arg_string_literal) #macro_arg_string_literal
+#define KP_UNUSED_PARAMETER(macro_arg_parameter) _Pragma(KP_Internal_UnusedStringify(unused(macro_arg_parameter)))
+
 // Random (TODO convert to overloadable functions)
 + (NSInteger)randomInt:(NSInteger)value;
 + (CGFloat)randomBetweenA:(CGFloat)a andB:(CGFloat)b;

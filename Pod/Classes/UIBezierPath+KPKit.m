@@ -249,4 +249,32 @@ NSArray *getAllPointsFromCGPath(CGPathRef path, CGFloat stepDistance) {
   return points;
 }
 
+#pragma mark - convenience constructors
+
++ (UIBezierPath *)kp_bezierPathWithDonut:(CGPoint)center innerRadius:(CGFloat)innerRadius outerRadius:(CGFloat)outerRadius {
+  CGRect donutRect = CGRectMake(center.x - outerRadius, center.y - outerRadius, outerRadius * 2, outerRadius * 2);
+  CGRect holeRect = CGRectMake(center.x - innerRadius, center.y - innerRadius, innerRadius * 2, innerRadius * 2);
+
+  UIBezierPath *donut = [UIBezierPath bezierPathWithOvalInRect:donutRect];
+  donut.usesEvenOddFillRule = YES;
+  UIBezierPath *hole = [UIBezierPath bezierPathWithOvalInRect:holeRect];
+
+  [donut appendPath:hole];
+  return donut;
+}
+
++ (UIBezierPath *)kp_bezierPathWithDonut:(CGPoint)center
+                             innerRadius:(CGFloat)innerRadius
+                             outerRadius:(CGFloat)outerRadius
+                              startAngle:(CGFloat)startAngle
+                                endAngle:(CGFloat)endAngle
+                               clockwise:(BOOL)clockwise {
+
+  UIBezierPath *donut = [UIBezierPath bezierPath];
+  [donut addArcWithCenter:center radius:outerRadius startAngle:startAngle endAngle:endAngle clockwise:clockwise];
+  [donut addArcWithCenter:center radius:innerRadius startAngle:endAngle endAngle:startAngle clockwise:!clockwise];
+  [donut closePath];
+  return donut;
+}
+
 @end
