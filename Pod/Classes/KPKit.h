@@ -1,5 +1,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import "KPMath.h"
+#import "KPEase.h"
 
 @interface KPKit : NSObject
 
@@ -75,7 +77,5 @@ CGPoint KPPolarToCartesian(CGFloat theta, CGFloat radius);
 
 // Views
 + (UIView *)firstSuperviewOfView:(UIView *)view thatIsKindOfClass:(__unsafe_unretained Class)someClass;
-
-
 
 @end
