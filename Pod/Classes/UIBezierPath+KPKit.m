@@ -2,6 +2,7 @@
 #import <objc/runtime.h>
 #import "NSNumber+KPKit.h"
 #import "KPKit.h"
+#import "KPMath.h"
 
 // Implementation options
 static const CGFloat KPDefaultPointResolution = 1.0; // Points between samples (Bigger numbers are faster)

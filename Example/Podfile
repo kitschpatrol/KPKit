@@ -1,0 +1,10 @@
+target 'KPKit', :exclusive => true do
+  pod "KPKit", :path => "../"
+end
+
+target 'Tests', :exclusive => true do
+  pod "KPKit", :path => "../"
+
+  pod 'Specta', '~> 0.2.1'
+  pod 'Expecta'
+end
