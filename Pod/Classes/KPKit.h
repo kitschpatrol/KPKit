@@ -61,15 +61,38 @@
         withAlignment:(NSTextAlignment)alignment
     clockwiseBaseline:(BOOL)clockwiseBaseline;
 
-// Foundation type helpers
++ (void)logAvailabeFontNames;
 
+// Foundation type helpers
 CGFloat KPMagnitudeOfVector(CGVector vector);
 BOOL KPVectorEqualToVector(CGVector vectorA, CGVector vectorB);
+
+CGRect KPSquareRectThatFitsInside(CGRect rect);
+CGRect KPSquareRectThatFitsOutside(CGRect rect);
+CGRect KPCIImageRectToUIImagePRect(CGRect coreImageRect, UIImage *image);
+CGPoint KPCIImagePointToUIImagePoint(CGPoint coreImagePoint, UIImage *image);
+CGFloat KPRectLongestSide(CGRect rect);
 
 CGFloat KPAngleBetweenCGPoint(CGPoint startPoint, CGPoint endPoint);
 CGFloat KPDistanceBetweenCGPoint(CGPoint startPoint, CGPoint endPoint);
 CGPoint KPLinearInterpolateBetweenCGPoint(CGPoint startPoint, CGPoint endPoint, CGFloat amount);
 CGPoint KPPolarToCartesian(CGFloat theta, CGFloat radius);
+
+CGRect KPSqareAroundPoint(CGPoint point, CGFloat side);
+CGRect KPRectAroundPoint(CGPoint point, CGSize size);
+
+CGPoint KPRectGetMidPoint(CGRect rect);
+
+// Vectory stuff
+CGPoint KPPointAdd(CGPoint a, CGPoint b);
+CGPoint KPPointSubtract(CGPoint a, CGPoint b);
+CGPoint KPPointMultiplyScalar(CGPoint point, CGFloat scalar);
+CGPoint KPPointDivideScalar(CGPoint point, CGFloat scalar);
+CGPoint KPPointMultiply(CGPoint a, CGPoint b);
+CGPoint KPPointDivide(CGPoint a, CGPoint b);
+CGPoint KPPointNormalize(CGPoint point);
+CGFloat KPPointGetMagnitude(CGPoint point);
+CGPoint KPPointSetMagnitude(CGPoint point, CGFloat magnitude);
 
 // Arrays
 + (id)randomObjectIn:(NSArray *)array;
@@ -81,5 +104,6 @@ CGPoint KPPolarToCartesian(CGFloat theta, CGFloat radius);
 
 // Views
 + (UIView *)firstSuperviewOfView:(UIView *)view thatIsKindOfClass:(__unsafe_unretained Class)someClass;
++ (NSArray *)subviewsOfView:(UIView *)view thatAreKindOfClass:(__unsafe_unretained Class)someClass;
 
 @end

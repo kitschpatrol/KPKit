@@ -120,8 +120,9 @@
 
   CTLineRef line = CTLineCreateWithAttributedString((__bridge CFAttributedStringRef)text);
   NSAssert(line != NULL, @"Problems creating core text line reference.");
-
   CFArrayRef runArray = CTLineGetGlyphRuns(line);
+  CFRelease(line);
+
   CFIndex runCount = CFArrayGetCount(runArray);
 
   // Go through each run
@@ -188,6 +189,16 @@
   }
 
   CGContextRestoreGState(context);
+}
+
++ (void)logAvailabeFontNames {
+  for (NSString *family in [UIFont familyNames]) {
+    NSLog(@"%@", family);
+
+    for (NSString *name in [UIFont fontNamesForFamilyName:family]) {
+      NSLog(@"  %@", name);
+    }
+  }
 }
 
 #pragma mark - File System
@@ -290,6 +301,20 @@ BOOL KPVectorEqualToVector(CGVector vectorA, CGVector vectorB) { return ((vector
   }
 }
 
+// goes deep
++ (NSArray *)subviewsOfView:(UIView *)view thatAreKindOfClass:(__unsafe_unretained Class)someClass {
+  NSMutableArray *classySubviews = [@[] mutableCopy];
+  for (UIView *subview in view.subviews) {
+    if ([subview isKindOfClass:someClass]) {
+      [classySubviews addObject:subview];
+    }
+
+    NSArray *subSubViews = [KPKit subviewsOfView:subview thatAreKindOfClass:someClass];
+    [classySubviews addObjectsFromArray:subSubViews];
+  }
+  return classySubviews;
+}
+
 CGPoint KPPolarToCartesian(CGFloat theta, CGFloat radius) {
 #if CGFLOAT_IS_DOUBLE
   return CGPointMake(radius * cos(theta), radius * sin(theta));
@@ -298,13 +323,61 @@ CGPoint KPPolarToCartesian(CGFloat theta, CGFloat radius) {
 #endif
 }
 
+CGFloat KPRectLongestSide(CGRect rect) { return MAX(rect.size.width, rect.size.height); }
+
+// Flip coordinate space, useful for going between from core to UI frameworks
+CGPoint KPCIImagePointToUIImagePoint(CGPoint coreImagePoint, UIImage *image) { return CGPointMake(coreImagePoint.x, image.size.height - coreImagePoint.y); }
+
+CGRect KPCIImageRectToUIImagePRect(CGRect coreImageRect, UIImage *image) {
+  return CGRectMake(coreImageRect.origin.x, (image.size.height - coreImageRect.origin.y) - coreImageRect.size.height, coreImageRect.size.width,
+                    coreImageRect.size.height);
+};
+
+CGRect KPSquareRectThatFitsOutside(CGRect rect) {
+  if (rect.size.width > rect.size.height) {
+    // increase height
+    CGFloat heightIncrease = rect.size.width - rect.size.height;
+    return CGRectMake(rect.origin.x, rect.origin.y - heightIncrease / 2, rect.size.width, rect.size.height + heightIncrease);
+  } else if (rect.size.height > rect.size.width) {
+    // increase width
+    CGFloat widthIncrease = rect.size.height - rect.size.width;
+    return CGRectMake(rect.origin.x - widthIncrease / 2, rect.origin.y, rect.size.width + widthIncrease, rect.size.height);
+  } else {
+    // Image was already square
+    return rect;
+  }
+}
+
+CGRect KPSquareRectThatFitsInside(CGRect rect) {
+  if (rect.size.height > rect.size.width) {
+    // decrease height
+    CGFloat heightDecrease = rect.size.height - rect.size.width;
+    return CGRectMake(rect.origin.x, rect.origin.y + heightDecrease / 2, rect.size.width, rect.size.height - heightDecrease);
+  } else if (rect.size.width > rect.size.height) {
+    // decrease width
+    CGFloat widthDecrease = rect.size.width - rect.size.height;
+    return CGRectMake(rect.origin.x + widthDecrease / 2, rect.origin.y, rect.size.width - widthDecrease, rect.size.height);
+  } else {
+    // Image was already square
+    return rect;
+  }
+}
+
 // Hmm... clockwise rotation?
+// Returns radian angle between -PI and PI.
+// "Origin" is the positive X axis
+// Clockwise is positive
 CGFloat KPAngleBetweenCGPoint(CGPoint startPoint, CGPoint endPoint) {
 #if CGFLOAT_IS_DOUBLE
-  return -atan2(endPoint.x - startPoint.x, endPoint.y - startPoint.y) + M_PI_2;
+  CGFloat angle = -atan2(endPoint.x - startPoint.x, endPoint.y - startPoint.y) + M_PI_2;
 #else
-  return -atan2f(endPoint.x - startPoint.x, endPoint.y - startPoint.y) + M_PI_2;
+  CGFloat angle = -atan2f(endPoint.x - startPoint.x, endPoint.y - startPoint.y) + M_PI_2;
 #endif
+  // ugly, but hopefully faster than fmod-based wrap
+  if (angle > M_PI) {
+    angle -= (M_PI * 2);
+  }
+  return angle;
 }
 
 CGFloat KPDistanceBetweenCGPoint(CGPoint startPoint, CGPoint endPoint) {
@@ -318,5 +391,33 @@ CGFloat KPDistanceBetweenCGPoint(CGPoint startPoint, CGPoint endPoint) {
 CGPoint KPLinearInterpolateBetweenCGPoint(CGPoint startPoint, CGPoint endPoint, CGFloat amount) {
   return CGPointMake(startPoint.x + ((endPoint.x - startPoint.x) * amount), startPoint.y + ((endPoint.y - startPoint.y) * amount));
 }
+
+CGRect KPSqareAroundPoint(CGPoint point, CGFloat side) { return KPRectAroundPoint(point, CGSizeMake(side, side)); }
+
+CGRect KPRectAroundPoint(CGPoint point, CGSize size) { return CGRectMake(point.x - size.width / 2, point.y - size.height / 2, size.width, size.height); }
+
+// Vectory stuff
+CGPoint KPPointAdd(CGPoint a, CGPoint b) { return CGPointMake(a.x + b.x, a.y + b.y); }
+CGPoint KPPointSubtract(CGPoint a, CGPoint b) { return CGPointMake(a.x - b.x, a.y - b.y); }
+
+CGPoint KPPointMultiplyScalar(CGPoint point, CGFloat scalar) { return CGPointMake(point.x * scalar, point.y * scalar); }
+CGPoint KPPointDivideScalar(CGPoint point, CGFloat scalar) { return CGPointMake(point.x / scalar, point.y / scalar); }
+CGPoint KPPointNormalize(CGPoint point) {
+  CGFloat magnitude = KPPointGetMagnitude(point);
+  if (magnitude == 0 || magnitude == 1) {
+    return point;
+
+  } else {
+    return KPPointDivideScalar(point, magnitude);
+  }
+}
+
+CGFloat KPPointGetMagnitude(CGPoint point) { return KPDistanceBetweenCGPoint(CGPointZero, point); }
+CGPoint KPPointSetMagnitude(CGPoint point, CGFloat magnitude) { return KPPointMultiplyScalar(KPPointNormalize(point), magnitude); }
+
+CGPoint KPPointMultiply(CGPoint a, CGPoint b) { return CGPointMake(a.x * b.x, a.y * b.y); }
+CGPoint KPPointDivide(CGPoint a, CGPoint b) { return CGPointMake(a.x / b.x, a.y / b.y); }
+
+CGPoint KPRectGetMidPoint(CGRect rect) { return CGPointMake(CGRectGetMidX(rect), CGRectGetMidY(rect)); }
 
 @end

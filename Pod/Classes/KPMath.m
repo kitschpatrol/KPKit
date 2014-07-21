@@ -99,46 +99,18 @@ double __attribute__((overloadable)) KPDegreesToRadians(double degrees) { return
 
 long double __attribute__((overloadable)) KPDegreesToRadians(long double degrees) { return degrees * (M_PI / 180.0); }
 
-float __attribute__((overloadable)) KPWrap(float value, float from, float to) {
-  // algorithm from http://stackoverflow.com/a/5852628/599884
-  if (from > to) {
-    float swapTemp = from;
-    from = to;
-    to = swapTemp;
-  }
-  float cycle = to - from;
-  if (cycle == 0) {
-    return to;
-  }
-  return value - cycle * floor((value - from) / cycle);
+void KPSwapCGFloat(CGFloat *a, CGFloat *b) {
+  CGFloat swapTemp = *a;
+  *b = *a;
+  *a = swapTemp;
 }
 
-double __attribute__((overloadable)) KPWrap(double value, double from, double to) {
-  // algorithm from http://stackoverflow.com/a/5852628/599884
+CGFloat KPWrap(CGFloat value, CGFloat from, CGFloat to) {
   if (from > to) {
-    double swapTemp = from;
-    from = to;
-    to = swapTemp;
+    KPSwapCGFloat(&from, &to);
   }
-  double cycle = to - from;
-  if (cycle == 0) {
-    return to;
-  }
-  return value - cycle * floor((value - from) / cycle);
-}
 
-long double __attribute__((overloadable)) KPWrap(long double value, long double from, long double to) {
-  // algorithm from http://stackoverflow.com/a/5852628/599884
-  if (from > to) {
-    long double swapTemp = from;
-    from = to;
-    to = swapTemp;
-  }
-  long double cycle = to - from;
-  if (cycle == 0) {
-    return to;
-  }
-  return value - cycle * floor((value - from) / cycle);
+  return KPModKeepSign(value - from, to - from) + from;
 }
 
 float __attribute__((overloadable)) KPWrapRadians(float angle) { return KPWrap(angle, (float)-M_PI, (float)M_PI); }
@@ -384,4 +356,46 @@ KPInterpolateHermite(long double y0, long double y1, long double y2, long double
   a3 = (long double)(-2 * pct3 + 3 * pct2);
 
   return (a0 * y1 + a1 * m0 + a2 * m1 + a3 * y2);
+}
+
+// Floating-point modulo
+// The result (the remainder) has same sign as the divisor.
+// Similar to matlab's mod(); Not similar to fmod() -   Mod(-3,4)= 1   fmod(-3,4)= -3
+CGFloat KPModKeepSign(CGFloat x, CGFloat y) {
+  if (y == 0) {
+    return x;
+  }
+
+  // ??? need double here for precision?
+  double m = x - y * floor(x / y);
+
+  // handle boundary cases resulted from floating-point cut off:
+
+  if (y > 0) {    // modulo range: [0..y)
+    if (m >= y) { // Mod(-1e-16             , 360.    ): m= 360.
+      return 0;
+    }
+
+    if (m < 0) {
+      if (y + m == y) {
+        return 0; // just in case...
+      } else {
+        return y + m; // Mod(106.81415022205296 , _TWO_PI ): m= -1.421e-14
+      }
+    }
+  } else // modulo range: (y..0]
+  {
+    if (m <= y) { // Mod(1e-16              , -360.   ): m= -360.
+      return 0;
+    }
+    if (m > 0) {
+      if (y + m == y) {
+        return 0; // just in case...
+      } else {
+        return y + m; // Mod(-106.81415022205296, -_TWO_PI): m= 1.421e-14
+      }
+    }
+  }
+
+  return m;
 }

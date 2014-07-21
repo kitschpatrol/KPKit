@@ -45,9 +45,10 @@ float __attribute__((overloadable)) KPAngleDifferenceRadians(float currentAngle,
 double __attribute__((overloadable)) KPAngleDifferenceRadians(double currentAngle, double targetAngle);
 long double __attribute__((overloadable)) KPAngleDifferenceRadians(long double currentAngle, long double targetAngle);
 
-float __attribute__((overloadable)) KPWrap(float value, float from, float to);
-double __attribute__((overloadable)) KPWrap(double value, double from, double to);
-long double __attribute__((overloadable)) KPWrap(long double value, long double from, long double to);
+void KPSwapCGFloat(CGFloat *a, CGFloat *b);
+CGFloat KPModKeepSign(CGFloat x, CGFloat y);
+
+CGFloat KPWrap(CGFloat value, CGFloat from, CGFloat to);
 
 float __attribute__((overloadable)) KPWrapRadians(float angle);
 double __attribute__((overloadable)) KPWrapRadians(double angle);
