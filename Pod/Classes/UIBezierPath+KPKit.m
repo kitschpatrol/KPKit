@@ -271,8 +271,15 @@ NSArray *getAllPointsFromCGPath(CGPathRef path, CGFloat stepDistance) {
                                clockwise:(BOOL)clockwise {
 
   UIBezierPath *donut = [UIBezierPath bezierPath];
-  [donut addArcWithCenter:center radius:outerRadius startAngle:startAngle endAngle:endAngle clockwise:clockwise];
-  [donut addArcWithCenter:center radius:innerRadius startAngle:endAngle endAngle:startAngle clockwise:!clockwise];
+
+  if (clockwise) {
+    [donut addArcWithCenter:center radius:outerRadius startAngle:startAngle endAngle:endAngle clockwise:clockwise];
+    [donut addArcWithCenter:center radius:innerRadius startAngle:endAngle endAngle:startAngle clockwise:!clockwise];
+  } else {
+    [donut addArcWithCenter:center radius:innerRadius startAngle:endAngle endAngle:startAngle clockwise:clockwise];
+    [donut addArcWithCenter:center radius:outerRadius startAngle:startAngle endAngle:endAngle clockwise:!clockwise];
+  }
+
   [donut closePath];
   return donut;
 }

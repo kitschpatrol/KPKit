@@ -3,6 +3,8 @@
 #import "KPMath.h"
 #import "KPEase.h"
 
+extern const CGPoint KPPointOne;
+
 @interface KPKit : NSObject
 
 // Credits
@@ -26,11 +28,19 @@
 #define KP_COLOR_RGB(r, g, b) LP_RGBA(r, g, b, 1.0f)
 #define KP_COLOR_HEX(hex)                                                                                                                                      \
   [UIColor colorWithRed:((float)((hex & 0xFF0000) >> 16)) / 255.0 green:((float)((hex & 0xFF00) >> 8)) / 255.0 blue:((float)(hex & 0xFF)) / 255.0 alpha:1.0]
-#define KP_LOG_FUNCTION NSLog((@"%s (%s:%d)"), __PRETTY_FUNCTION__, ((strrchr(__FILE__, '/') ?: __FILE__ - 1) + 1), __LINE__);
+
+// http://stackoverflow.com/questions/15558411/nsthread-number-on-ios
+#define KP_LOG_FUNCTION                                                                                                                                        \
+  NSLog((@"%s (%s:%d) on thread %i%@"), __PRETTY_FUNCTION__, ((strrchr(__FILE__, '/') ?: __FILE__ - 1) + 1), __LINE__,                                         \
+        [[[NSThread currentThread] valueForKeyPath:@"private.seqNum"] integerValue],                                                                           \
+        ([NSThread currentThread].name) ? [NSString stringWithFormat:@" %@", [NSThread currentThread].name] : @"");
 
 // http://stackoverflow.com/questions/12198449/cross-platform-macro-for-silencing-unused-variables-warning/12199209#12199209
 #define KP_Internal_UnusedStringify(macro_arg_string_literal) #macro_arg_string_literal
 #define KP_UNUSED_PARAMETER(macro_arg_parameter) _Pragma(KP_Internal_UnusedStringify(unused(macro_arg_parameter)))
+
+#define KP_WATCH(VARIABLE_TO_WATCH) NSLog(@"%@: %@", @ #VARIABLE_TO_WATCH, @(VARIABLE_TO_WATCH));
+#define KP_WATCH_OBJECT(VARIABLE_TO_WATCH) NSLog(@"%@: %@", @ #VARIABLE_TO_WATCH, VARIABLE_TO_WATCH);
 
 // Random (TODO convert to overloadable functions)
 + (NSInteger)randomInt:(NSInteger)value;
@@ -43,6 +53,8 @@
 + (UIColor *)randomColorWithAlpha:(CGFloat)alphaValue;
 + (UIColor *)randomBrightnessOfColor:(UIColor *)color;
 + (UIColor *)color:(UIColor *)color withBrightness:(CGFloat)value;
+
++ (UIColor *)colorFromHexString:(NSString *)hexString;
 
 // File System
 + (NSURL *)documentDirectory;
@@ -69,11 +81,13 @@ BOOL KPVectorEqualToVector(CGVector vectorA, CGVector vectorB);
 
 CGRect KPSquareRectThatFitsInside(CGRect rect);
 CGRect KPSquareRectThatFitsOutside(CGRect rect);
-CGRect KPCIImageRectToUIImagePRect(CGRect coreImageRect, UIImage *image);
-CGPoint KPCIImagePointToUIImagePoint(CGPoint coreImagePoint, UIImage *image);
+
+CGRect KPCIImageRectToUIImageRect(CGRect coreImageRect, CGSize uiImageSize);
+CGPoint KPCIImagePointToUIImagePoint(CGPoint coreImagePoint, CGSize uiImageSize);
 CGFloat KPRectLongestSide(CGRect rect);
 
 CGFloat KPAngleBetweenCGPoint(CGPoint startPoint, CGPoint endPoint);
+CGFloat KPDistanceSquaredBetweenCGPoint(CGPoint startPoint, CGPoint endPoint); // Faster
 CGFloat KPDistanceBetweenCGPoint(CGPoint startPoint, CGPoint endPoint);
 CGPoint KPLinearInterpolateBetweenCGPoint(CGPoint startPoint, CGPoint endPoint, CGFloat amount);
 CGPoint KPPolarToCartesian(CGFloat theta, CGFloat radius);
@@ -84,6 +98,7 @@ CGRect KPRectAroundPoint(CGPoint point, CGSize size);
 CGPoint KPRectGetMidPoint(CGRect rect);
 
 // Vectory stuff
+CGPoint KPPointTranslate(CGPoint a, CGFloat dx, CGFloat dy);
 CGPoint KPPointAdd(CGPoint a, CGPoint b);
 CGPoint KPPointSubtract(CGPoint a, CGPoint b);
 CGPoint KPPointMultiplyScalar(CGPoint point, CGFloat scalar);

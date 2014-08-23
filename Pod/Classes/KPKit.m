@@ -1,21 +1,23 @@
-#import "KPKit.h"
-#import <UIKit/UIKit.h>
-
-#import "UIBezierPath+KPKit.h"
-
+@import UIKit;
 @import CoreText;
 
+#import "UIBezierPath+KPKit.h"
+#import "KPKit.h"
+
 // Pretty major mess... these should (maybe) be moved into descrete classes and / or categories eventually.
+const CGPoint KPPointOne = (CGPoint) {.x = 1.0, .y = 1.0};
 
 @implementation KPKit
 
 #pragma mark - Random
 
+// exclusive
 + (NSInteger)randomInt:(NSInteger)value {
-  return ((NSInteger)arc4random()) % value;
+  return abs(((NSInteger)arc4random()) % value);
 }
 
 + (CGFloat)randomBetweenA:(CGFloat)a andB:(CGFloat)b {
+
   if (a == b) {
     return a;
   } else {
@@ -121,7 +123,6 @@
   CTLineRef line = CTLineCreateWithAttributedString((__bridge CFAttributedStringRef)text);
   NSAssert(line != NULL, @"Problems creating core text line reference.");
   CFArrayRef runArray = CTLineGetGlyphRuns(line);
-  CFRelease(line);
 
   CFIndex runCount = CFArrayGetCount(runArray);
 
@@ -184,10 +185,17 @@
       CGContextSetTextMatrix(context, textMatrix);
       // TODO restore text matrix?
 
+      // Have to set attributed color explicitly
+      //      UIColor *runForegroundColor = CFDictionaryGetValue(CTRunGetAttributes(run), kCTForegroundColorAttributeName);
+      //      if (runForegroundColor != NULL) {
+      //        CGContextSetFillColorWithColor(context, runForegroundColor.CGColor);
+      //      }
+
       CTRunDraw(run, context, glyphRange);
     }
   }
 
+  CFRelease(line);
   CGContextRestoreGState(context);
 }
 
@@ -326,10 +334,12 @@ CGPoint KPPolarToCartesian(CGFloat theta, CGFloat radius) {
 CGFloat KPRectLongestSide(CGRect rect) { return MAX(rect.size.width, rect.size.height); }
 
 // Flip coordinate space, useful for going between from core to UI frameworks
-CGPoint KPCIImagePointToUIImagePoint(CGPoint coreImagePoint, UIImage *image) { return CGPointMake(coreImagePoint.x, image.size.height - coreImagePoint.y); }
+CGPoint KPCIImagePointToUIImagePoint(CGPoint coreImagePoint, CGSize uiImageSize) {
+  return CGPointMake(coreImagePoint.x, uiImageSize.height - coreImagePoint.y);
+}
 
-CGRect KPCIImageRectToUIImagePRect(CGRect coreImageRect, UIImage *image) {
-  return CGRectMake(coreImageRect.origin.x, (image.size.height - coreImageRect.origin.y) - coreImageRect.size.height, coreImageRect.size.width,
+CGRect KPCIImageRectToUIImageRect(CGRect coreImageRect, CGSize uiImageSize) {
+  return CGRectMake(coreImageRect.origin.x, (uiImageSize.height - coreImageRect.origin.y) - coreImageRect.size.height, coreImageRect.size.width,
                     coreImageRect.size.height);
 };
 
@@ -380,6 +390,10 @@ CGFloat KPAngleBetweenCGPoint(CGPoint startPoint, CGPoint endPoint) {
   return angle;
 }
 
+CGFloat KPDistanceSquaredBetweenCGPoint(CGPoint startPoint, CGPoint endPoint) {
+  return (endPoint.x - startPoint.x) * (endPoint.x - startPoint.x) + (endPoint.y - startPoint.y) * (endPoint.y - startPoint.y);
+}
+
 CGFloat KPDistanceBetweenCGPoint(CGPoint startPoint, CGPoint endPoint) {
 #if CGFLOAT_IS_DOUBLE
   return hypotf(endPoint.x - startPoint.x, endPoint.y - startPoint.y);
@@ -397,6 +411,7 @@ CGRect KPSqareAroundPoint(CGPoint point, CGFloat side) { return KPRectAroundPoin
 CGRect KPRectAroundPoint(CGPoint point, CGSize size) { return CGRectMake(point.x - size.width / 2, point.y - size.height / 2, size.width, size.height); }
 
 // Vectory stuff
+CGPoint KPPointTranslate(CGPoint a, CGFloat dx, CGFloat dy) { return CGPointMake(a.x + dx, a.y + dy); }
 CGPoint KPPointAdd(CGPoint a, CGPoint b) { return CGPointMake(a.x + b.x, a.y + b.y); }
 CGPoint KPPointSubtract(CGPoint a, CGPoint b) { return CGPointMake(a.x - b.x, a.y - b.y); }
 
@@ -419,5 +434,12 @@ CGPoint KPPointMultiply(CGPoint a, CGPoint b) { return CGPointMake(a.x * b.x, a.
 CGPoint KPPointDivide(CGPoint a, CGPoint b) { return CGPointMake(a.x / b.x, a.y / b.y); }
 
 CGPoint KPRectGetMidPoint(CGRect rect) { return CGPointMake(CGRectGetMidX(rect), CGRectGetMidY(rect)); }
+
++ (UIColor *)colorFromHexString:(NSString *)hexString {
+  unsigned int hexValue;
+  NSScanner *scanner = [NSScanner scannerWithString:hexString];
+  [scanner scanHexInt:&hexValue];
+  return KP_COLOR_HEX(hexValue);
+}
 
 @end
