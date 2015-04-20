@@ -32,8 +32,13 @@ extern const CGPoint KPPointOne;
 // http://stackoverflow.com/questions/15558411/nsthread-number-on-ios
 #define KP_LOG_FUNCTION                                                                                                                                        \
   NSLog((@"%s (%s:%d) on thread %i%@"), __PRETTY_FUNCTION__, ((strrchr(__FILE__, '/') ?: __FILE__ - 1) + 1), __LINE__,                                         \
-        [[[NSThread currentThread] valueForKeyPath:@"private.seqNum"] integerValue],                                                                           \
+        [[[NSThread currentThread] valueForKeyPath:@"private.seqNum"] intValue],                                                                               \
         ([NSThread currentThread].name) ? [NSString stringWithFormat:@" %@", [NSThread currentThread].name] : @"");
+
+#define KP_DDLOGDEBUG_FUNCTION                                                                                                                                 \
+  DDLogDebug((@"%s (%s:%d) on thread %i%@"), __PRETTY_FUNCTION__, ((strrchr(__FILE__, '/') ?: __FILE__ - 1) + 1), __LINE__,                                    \
+             [[[NSThread currentThread] valueForKeyPath:@"private.seqNum"] intValue],                                                                          \
+             ([NSThread currentThread].name) ? [NSString stringWithFormat:@" %@", [NSThread currentThread].name] : @"");
 
 // http://stackoverflow.com/questions/12198449/cross-platform-macro-for-silencing-unused-variables-warning/12199209#12199209
 #define KP_Internal_UnusedStringify(macro_arg_string_literal) #macro_arg_string_literal
@@ -96,10 +101,12 @@ CGRect KPSqareAroundPoint(CGPoint point, CGFloat side);
 CGRect KPRectAroundPoint(CGPoint point, CGSize size);
 
 CGPoint KPRectGetMidPoint(CGRect rect);
+CGRect KPRectSetMidPoint(CGRect rect, CGPoint midPoint);
 
 // Vectory stuff
 CGPoint KPPointTranslate(CGPoint a, CGFloat dx, CGFloat dy);
 CGPoint KPPointAdd(CGPoint a, CGPoint b);
+CGPoint KPRotatePointAroundPoint(CGPoint point, CGPoint rotationPoint, CGFloat theta);
 CGPoint KPPointSubtract(CGPoint a, CGPoint b);
 CGPoint KPPointMultiplyScalar(CGPoint point, CGFloat scalar);
 CGPoint KPPointDivideScalar(CGPoint point, CGFloat scalar);
@@ -108,6 +115,8 @@ CGPoint KPPointDivide(CGPoint a, CGPoint b);
 CGPoint KPPointNormalize(CGPoint point);
 CGFloat KPPointGetMagnitude(CGPoint point);
 CGPoint KPPointSetMagnitude(CGPoint point, CGFloat magnitude);
+
++ (void)sizeHeightToFit:(UILabel *)label;
 
 // Arrays
 + (id)randomObjectIn:(NSArray *)array;
@@ -118,7 +127,17 @@ CGPoint KPPointSetMagnitude(CGPoint point, CGFloat magnitude);
 + (UIImage *)imageFromColor:(UIColor *)color;
 
 // Views
+
 + (UIView *)firstSuperviewOfView:(UIView *)view thatIsKindOfClass:(__unsafe_unretained Class)someClass;
 + (NSArray *)subviewsOfView:(UIView *)view thatAreKindOfClass:(__unsafe_unretained Class)someClass;
++ (NSArray *)subviewsOfView:(UIView *)view thatAreMemberOfClass:(__unsafe_unretained Class)someClass;
+
+// Options
+// Flips the matching bit to true or false, and returns a new options integer
+NSInteger setOptionToValue(NSInteger options, NSInteger option, BOOL value);
+
+// Handy
++ (NSString *)appVersion;
++ (NSString *)appBuild;
 
 @end

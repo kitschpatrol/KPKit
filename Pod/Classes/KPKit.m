@@ -5,22 +5,25 @@
 #import "KPKit.h"
 
 // Pretty major mess... these should (maybe) be moved into descrete classes and / or categories eventually.
-const CGPoint KPPointOne = (CGPoint) {.x = 1.0, .y = 1.0};
+const CGPoint KPPointOne = (CGPoint){.x = 1.0, .y = 1.0};
 
 @implementation KPKit
 
 #pragma mark - Random
 
 // exclusive
-+ (NSInteger)randomInt:(NSInteger)value {
++ (NSInteger)randomInt:(NSInteger)value
+{
   return abs(((NSInteger)arc4random()) % value);
 }
 
-+ (CGFloat)randomBetweenA:(CGFloat)a andB:(CGFloat)b {
++ (CGFloat)randomBetweenA:(CGFloat)a andB:(CGFloat)b
+{
 
   if (a == b) {
     return a;
-  } else {
+  }
+  else {
     CGFloat max = a > b ? a : b;
     CGFloat min = a < b ? a : b;
     NSAssert(max - min > 0, @"Your expression returned true for max-min <= 0 " @"for some reason... max = %f, min = %f", max, min);
@@ -28,11 +31,13 @@ const CGPoint KPPointOne = (CGPoint) {.x = 1.0, .y = 1.0};
   }
 }
 
-+ (NSInteger)randomIntBetweenA:(NSInteger)a andB:(NSInteger)b {
++ (NSInteger)randomIntBetweenA:(NSInteger)a andB:(NSInteger)b
+{
   NSInteger returnVal;
   if (a == b) {
     returnVal = a;
-  } else {
+  }
+  else {
     NSInteger max = a > b ? a : b;
     NSInteger min = a < b ? a : b;
     NSAssert(max - min > 0, @"Your expression returned true for max-min <= 0 " @"for some reason... max = %ld, min = %ld", (long)max, (long)min);
@@ -43,11 +48,13 @@ const CGPoint KPPointOne = (CGPoint) {.x = 1.0, .y = 1.0};
 
 #pragma mark - Color
 
-+ (UIColor *)randomColor {
++ (UIColor *)randomColor
+{
   return [self randomColorWithAlpha:1.0];
 }
 
-+ (UIColor *)colorWithAlpha:(UIColor *)color alpha:(CGFloat)alpha {
++ (UIColor *)colorWithAlpha:(UIColor *)color alpha:(CGFloat)alpha
+{
   CGFloat hue;
   CGFloat saturation;
   CGFloat brightness;
@@ -55,20 +62,23 @@ const CGPoint KPPointOne = (CGPoint) {.x = 1.0, .y = 1.0};
 
   if ([color getHue:&hue saturation:&saturation brightness:&brightness alpha:&oldAlpha]) {
     return [UIColor colorWithHue:hue saturation:saturation brightness:brightness alpha:alpha];
-  } else {
+  }
+  else {
     // Error, could not convert
     return color;
   }
 }
 
-+ (UIColor *)randomColorWithAlpha:(CGFloat)alphaValue {
++ (UIColor *)randomColorWithAlpha:(CGFloat)alphaValue
+{
   CGFloat red = (CGFloat)arc4random() / (CGFloat)RAND_MAX;
   CGFloat blue = (CGFloat)arc4random() / (CGFloat)RAND_MAX;
   CGFloat green = (CGFloat)arc4random() / (CGFloat)RAND_MAX;
   return [UIColor colorWithRed:red green:green blue:blue alpha:alphaValue];
 }
 
-+ (UIColor *)randomBrightnessOfColor:(UIColor *)color {
++ (UIColor *)randomBrightnessOfColor:(UIColor *)color
+{
   CGFloat hue;
   CGFloat saturation;
   CGFloat brightness;
@@ -76,13 +86,15 @@ const CGPoint KPPointOne = (CGPoint) {.x = 1.0, .y = 1.0};
 
   if ([color getHue:&hue saturation:&saturation brightness:&brightness alpha:&alpha]) {
     return [UIColor colorWithHue:hue saturation:saturation brightness:[KPKit randomBetweenA:0.5 andB:0.9] alpha:alpha];
-  } else {
+  }
+  else {
     // Error, could not convert
     return color;
   }
 }
 
-+ (UIColor *)color:(UIColor *)color withBrightness:(CGFloat)value {
++ (UIColor *)color:(UIColor *)color withBrightness:(CGFloat)value
+{
   CGFloat hue;
   CGFloat saturation;
   CGFloat brightness;
@@ -90,7 +102,8 @@ const CGPoint KPPointOne = (CGPoint) {.x = 1.0, .y = 1.0};
 
   if ([color getHue:&hue saturation:&saturation brightness:&brightness alpha:&alpha]) {
     return [UIColor colorWithHue:hue saturation:saturation brightness:value alpha:alpha];
-  } else {
+  }
+  else {
     // Error, could not convert
     return color;
   }
@@ -98,15 +111,25 @@ const CGPoint KPPointOne = (CGPoint) {.x = 1.0, .y = 1.0};
 
 #pragma mark - Text
 
-+ (void)drawText:(NSAttributedString *)text onPath:(UIBezierPath *)path {
++ (void)sizeHeightToFit:(UILabel *)label
+{
+  CGSize originalSize = label.bounds.size;
+  CGSize sizeThatFitsHeight = [label sizeThatFits:originalSize];
+  label.frame = CGRectMake(label.frame.origin.x, label.frame.origin.y, label.frame.size.width, sizeThatFitsHeight.height);
+}
+
++ (void)drawText:(NSAttributedString *)text onPath:(UIBezierPath *)path
+{
   [self drawText:text onPath:path inContext:UIGraphicsGetCurrentContext() withAlignment:NSTextAlignmentLeft clockwiseBaseline:YES];
 }
 
-+ (void)drawText:(NSAttributedString *)text onPath:(UIBezierPath *)path inContext:(CGContextRef)context {
++ (void)drawText:(NSAttributedString *)text onPath:(UIBezierPath *)path inContext:(CGContextRef)context
+{
   [self drawText:text onPath:path inContext:context withAlignment:NSTextAlignmentLeft clockwiseBaseline:YES];
 }
 
-+ (void)drawText:(NSAttributedString *)text onPath:(UIBezierPath *)path inContext:(CGContextRef)context withAlignment:(NSTextAlignment)alignment {
++ (void)drawText:(NSAttributedString *)text onPath:(UIBezierPath *)path inContext:(CGContextRef)context withAlignment:(NSTextAlignment)alignment
+{
   [self drawText:text onPath:path inContext:context withAlignment:alignment clockwiseBaseline:YES];
 }
 
@@ -114,7 +137,8 @@ const CGPoint KPPointOne = (CGPoint) {.x = 1.0, .y = 1.0};
                onPath:(UIBezierPath *)path
             inContext:(CGContextRef)context
         withAlignment:(NSTextAlignment)alignment
-    clockwiseBaseline:(BOOL)clockwiseBaseline {
+    clockwiseBaseline:(BOOL)clockwiseBaseline
+{
   NSAssert((alignment != NSTextAlignmentJustified), @"Justified text alginment not supported for drawing text on a path.");
   NSAssert((alignment != NSTextAlignmentNatural), @"Natural text alginment not supported for drawing text on a path.");
 
@@ -199,7 +223,8 @@ const CGPoint KPPointOne = (CGPoint) {.x = 1.0, .y = 1.0};
   CGContextRestoreGState(context);
 }
 
-+ (void)logAvailabeFontNames {
++ (void)logAvailabeFontNames
+{
   for (NSString *family in [UIFont familyNames]) {
     NSLog(@"%@", family);
 
@@ -211,19 +236,23 @@ const CGPoint KPPointOne = (CGPoint) {.x = 1.0, .y = 1.0};
 
 #pragma mark - File System
 
-+ (NSURL *)documentDirectory {
++ (NSURL *)documentDirectory
+{
   return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
 }
 
-+ (NSURL *)tempDirectory {
++ (NSURL *)tempDirectory
+{
   return [NSURL URLWithString:NSTemporaryDirectory()];
 }
 
-+ (NSURL *)cacheDirectory {
++ (NSURL *)cacheDirectory
+{
   return [[[NSFileManager defaultManager] URLsForDirectory:NSCachesDirectory inDomains:NSUserDomainMask] lastObject];
 }
 
-+ (void)clearTempDirectory {
++ (void)clearTempDirectory
+{
   NSArray *tmpDirectory = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:NSTemporaryDirectory() error:NULL];
   for (NSString *file in tmpDirectory) {
     NSLog(@"deleting: %@", file);
@@ -231,7 +260,8 @@ const CGPoint KPPointOne = (CGPoint) {.x = 1.0, .y = 1.0};
   }
 }
 
-+ (void)clearCacheDirectory {
++ (void)clearCacheDirectory
+{
   NSArray *cacheDirectory = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[[KPKit cacheDirectory] path] error:NULL];
   for (NSString *file in cacheDirectory) {
     NSLog(@"deleting: %@", file);
@@ -241,18 +271,26 @@ const CGPoint KPPointOne = (CGPoint) {.x = 1.0, .y = 1.0};
 
 #pragma mark - Foundation type helpers
 
-CGFloat KPMagnitudeOfVector(CGVector vector) { return hypotf((float)vector.dx, (float)vector.dy); }
+CGFloat KPMagnitudeOfVector(CGVector vector)
+{
+  return hypotf((float)vector.dx, (float)vector.dy);
+}
 
-BOOL KPVectorEqualToVector(CGVector vectorA, CGVector vectorB) { return ((vectorA.dx == vectorB.dx) && (vectorA.dy == vectorB.dy)); }
+BOOL KPVectorEqualToVector(CGVector vectorA, CGVector vectorB)
+{
+  return ((vectorA.dx == vectorB.dx) && (vectorA.dy == vectorB.dy));
+}
 
 #pragma mark - Arrays
 
-+ (id)randomObjectIn:(NSArray *)array {
++ (id)randomObjectIn:(NSArray *)array
+{
   NSUInteger randomIndex = (NSUInteger)arc4random_uniform((u_int32_t)[array count]);
   return [array objectAtIndex:randomIndex];
 }
 
-+ (NSNumber *)meanOf:(NSArray *)array {
++ (NSNumber *)meanOf:(NSArray *)array
+{
   double runningTotal = 0.0;
 
   for (NSNumber *number in array) {
@@ -262,8 +300,10 @@ BOOL KPVectorEqualToVector(CGVector vectorA, CGVector vectorB) { return ((vector
   return [NSNumber numberWithDouble:(runningTotal / [array count])];
 }
 
-+ (NSNumber *)standardDeviationOf:(NSArray *)array {
-  if (![array count]) return nil;
++ (NSNumber *)standardDeviationOf:(NSArray *)array
+{
+  if (![array count])
+    return nil;
 
   double mean = [[self meanOf:array] doubleValue];
   double sumOfSquaredDifferences = 0.0;
@@ -279,7 +319,8 @@ BOOL KPVectorEqualToVector(CGVector vectorA, CGVector vectorB) { return ((vector
 
 #pragma mark - Images
 
-+ (UIImage *)imageFromColor:(UIColor *)color {
++ (UIImage *)imageFromColor:(UIColor *)color
+{
   CGRect rect = CGRectMake(0, 0, 1, 1);
   UIGraphicsBeginImageContext(rect.size);
   CGContextRef context = UIGraphicsGetCurrentContext();
@@ -294,25 +335,46 @@ BOOL KPVectorEqualToVector(CGVector vectorA, CGVector vectorB) { return ((vector
 
 #pragma mark - Views
 
-+ (UIView *)firstSuperviewOfView:(UIView *)view thatIsKindOfClass:(__unsafe_unretained Class)someClass {
++ (UIView *)firstSuperviewOfView:(UIView *)view thatIsKindOfClass:(__unsafe_unretained Class)someClass
+{
   if (view.superview) {
     if ([view.superview isKindOfClass:someClass]) {
       // Found it
       return view.superview;
-    } else {
+    }
+    else {
       // Keep climbing recursively
       return [self firstSuperviewOfView:view.superview thatIsKindOfClass:someClass];
     }
-  } else {
+  }
+  else {
     // Rached the top... no superview of the class we want
     return nil;
   }
 }
 
 // goes deep
-+ (NSArray *)subviewsOfView:(UIView *)view thatAreKindOfClass:(__unsafe_unretained Class)someClass {
+
++ (NSArray *)subviewsOfView:(UIView *)view thatAreMemberOfClass:(__unsafe_unretained Class)someClass
+{
   NSMutableArray *classySubviews = [@[] mutableCopy];
   for (UIView *subview in view.subviews) {
+
+    if ([subview isMemberOfClass:someClass]) {
+      [classySubviews addObject:subview];
+    }
+
+    NSArray *subSubViews = [KPKit subviewsOfView:subview thatAreMemberOfClass:someClass];
+    [classySubviews addObjectsFromArray:subSubViews];
+  }
+  return classySubviews;
+}
+
++ (NSArray *)subviewsOfView:(UIView *)view thatAreKindOfClass:(__unsafe_unretained Class)someClass
+{
+  NSMutableArray *classySubviews = [@[] mutableCopy];
+  for (UIView *subview in view.subviews) {
+
     if ([subview isKindOfClass:someClass]) {
       [classySubviews addObject:subview];
     }
@@ -323,7 +385,8 @@ BOOL KPVectorEqualToVector(CGVector vectorA, CGVector vectorB) { return ((vector
   return classySubviews;
 }
 
-CGPoint KPPolarToCartesian(CGFloat theta, CGFloat radius) {
+CGPoint KPPolarToCartesian(CGFloat theta, CGFloat radius)
+{
 #if CGFLOAT_IS_DOUBLE
   return CGPointMake(radius * cos(theta), radius * sin(theta));
 #else
@@ -331,43 +394,54 @@ CGPoint KPPolarToCartesian(CGFloat theta, CGFloat radius) {
 #endif
 }
 
-CGFloat KPRectLongestSide(CGRect rect) { return MAX(rect.size.width, rect.size.height); }
+CGFloat KPRectLongestSide(CGRect rect)
+{
+  return MAX(rect.size.width, rect.size.height);
+}
 
 // Flip coordinate space, useful for going between from core to UI frameworks
-CGPoint KPCIImagePointToUIImagePoint(CGPoint coreImagePoint, CGSize uiImageSize) {
+CGPoint KPCIImagePointToUIImagePoint(CGPoint coreImagePoint, CGSize uiImageSize)
+{
   return CGPointMake(coreImagePoint.x, uiImageSize.height - coreImagePoint.y);
 }
 
-CGRect KPCIImageRectToUIImageRect(CGRect coreImageRect, CGSize uiImageSize) {
+CGRect KPCIImageRectToUIImageRect(CGRect coreImageRect, CGSize uiImageSize)
+{
   return CGRectMake(coreImageRect.origin.x, (uiImageSize.height - coreImageRect.origin.y) - coreImageRect.size.height, coreImageRect.size.width,
                     coreImageRect.size.height);
 };
 
-CGRect KPSquareRectThatFitsOutside(CGRect rect) {
+CGRect KPSquareRectThatFitsOutside(CGRect rect)
+{
   if (rect.size.width > rect.size.height) {
     // increase height
     CGFloat heightIncrease = rect.size.width - rect.size.height;
     return CGRectMake(rect.origin.x, rect.origin.y - heightIncrease / 2, rect.size.width, rect.size.height + heightIncrease);
-  } else if (rect.size.height > rect.size.width) {
+  }
+  else if (rect.size.height > rect.size.width) {
     // increase width
     CGFloat widthIncrease = rect.size.height - rect.size.width;
     return CGRectMake(rect.origin.x - widthIncrease / 2, rect.origin.y, rect.size.width + widthIncrease, rect.size.height);
-  } else {
+  }
+  else {
     // Image was already square
     return rect;
   }
 }
 
-CGRect KPSquareRectThatFitsInside(CGRect rect) {
+CGRect KPSquareRectThatFitsInside(CGRect rect)
+{
   if (rect.size.height > rect.size.width) {
     // decrease height
     CGFloat heightDecrease = rect.size.height - rect.size.width;
     return CGRectMake(rect.origin.x, rect.origin.y + heightDecrease / 2, rect.size.width, rect.size.height - heightDecrease);
-  } else if (rect.size.width > rect.size.height) {
+  }
+  else if (rect.size.width > rect.size.height) {
     // decrease width
     CGFloat widthDecrease = rect.size.width - rect.size.height;
     return CGRectMake(rect.origin.x + widthDecrease / 2, rect.origin.y, rect.size.width - widthDecrease, rect.size.height);
-  } else {
+  }
+  else {
     // Image was already square
     return rect;
   }
@@ -377,7 +451,8 @@ CGRect KPSquareRectThatFitsInside(CGRect rect) {
 // Returns radian angle between -PI and PI.
 // "Origin" is the positive X axis
 // Clockwise is positive
-CGFloat KPAngleBetweenCGPoint(CGPoint startPoint, CGPoint endPoint) {
+CGFloat KPAngleBetweenCGPoint(CGPoint startPoint, CGPoint endPoint)
+{
 #if CGFLOAT_IS_DOUBLE
   CGFloat angle = -atan2(endPoint.x - startPoint.x, endPoint.y - startPoint.y) + M_PI_2;
 #else
@@ -390,11 +465,13 @@ CGFloat KPAngleBetweenCGPoint(CGPoint startPoint, CGPoint endPoint) {
   return angle;
 }
 
-CGFloat KPDistanceSquaredBetweenCGPoint(CGPoint startPoint, CGPoint endPoint) {
+CGFloat KPDistanceSquaredBetweenCGPoint(CGPoint startPoint, CGPoint endPoint)
+{
   return (endPoint.x - startPoint.x) * (endPoint.x - startPoint.x) + (endPoint.y - startPoint.y) * (endPoint.y - startPoint.y);
 }
 
-CGFloat KPDistanceBetweenCGPoint(CGPoint startPoint, CGPoint endPoint) {
+CGFloat KPDistanceBetweenCGPoint(CGPoint startPoint, CGPoint endPoint)
+{
 #if CGFLOAT_IS_DOUBLE
   return hypotf(endPoint.x - startPoint.x, endPoint.y - startPoint.y);
 #else
@@ -402,44 +479,116 @@ CGFloat KPDistanceBetweenCGPoint(CGPoint startPoint, CGPoint endPoint) {
 #endif
 }
 
-CGPoint KPLinearInterpolateBetweenCGPoint(CGPoint startPoint, CGPoint endPoint, CGFloat amount) {
+CGPoint KPLinearInterpolateBetweenCGPoint(CGPoint startPoint, CGPoint endPoint, CGFloat amount)
+{
   return CGPointMake(startPoint.x + ((endPoint.x - startPoint.x) * amount), startPoint.y + ((endPoint.y - startPoint.y) * amount));
 }
 
-CGRect KPSqareAroundPoint(CGPoint point, CGFloat side) { return KPRectAroundPoint(point, CGSizeMake(side, side)); }
+CGRect KPSqareAroundPoint(CGPoint point, CGFloat side)
+{
+  return KPRectAroundPoint(point, CGSizeMake(side, side));
+}
 
-CGRect KPRectAroundPoint(CGPoint point, CGSize size) { return CGRectMake(point.x - size.width / 2, point.y - size.height / 2, size.width, size.height); }
+CGRect KPRectAroundPoint(CGPoint point, CGSize size)
+{
+  return CGRectMake(point.x - size.width / 2, point.y - size.height / 2, size.width, size.height);
+}
 
 // Vectory stuff
-CGPoint KPPointTranslate(CGPoint a, CGFloat dx, CGFloat dy) { return CGPointMake(a.x + dx, a.y + dy); }
-CGPoint KPPointAdd(CGPoint a, CGPoint b) { return CGPointMake(a.x + b.x, a.y + b.y); }
-CGPoint KPPointSubtract(CGPoint a, CGPoint b) { return CGPointMake(a.x - b.x, a.y - b.y); }
+CGPoint KPPointTranslate(CGPoint a, CGFloat dx, CGFloat dy)
+{
+  return CGPointMake(a.x + dx, a.y + dy);
+}
+CGPoint KPPointAdd(CGPoint a, CGPoint b)
+{
+  return CGPointMake(a.x + b.x, a.y + b.y);
+}
+CGPoint KPPointSubtract(CGPoint a, CGPoint b)
+{
+  return CGPointMake(a.x - b.x, a.y - b.y);
+}
 
-CGPoint KPPointMultiplyScalar(CGPoint point, CGFloat scalar) { return CGPointMake(point.x * scalar, point.y * scalar); }
-CGPoint KPPointDivideScalar(CGPoint point, CGFloat scalar) { return CGPointMake(point.x / scalar, point.y / scalar); }
-CGPoint KPPointNormalize(CGPoint point) {
+CGPoint KPPointMultiplyScalar(CGPoint point, CGFloat scalar)
+{
+  return CGPointMake(point.x * scalar, point.y * scalar);
+}
+CGPoint KPPointDivideScalar(CGPoint point, CGFloat scalar)
+{
+  return CGPointMake(point.x / scalar, point.y / scalar);
+}
+CGPoint KPPointNormalize(CGPoint point)
+{
   CGFloat magnitude = KPPointGetMagnitude(point);
   if (magnitude == 0 || magnitude == 1) {
     return point;
-
-  } else {
+  }
+  else {
     return KPPointDivideScalar(point, magnitude);
   }
 }
 
-CGFloat KPPointGetMagnitude(CGPoint point) { return KPDistanceBetweenCGPoint(CGPointZero, point); }
-CGPoint KPPointSetMagnitude(CGPoint point, CGFloat magnitude) { return KPPointMultiplyScalar(KPPointNormalize(point), magnitude); }
+CGFloat KPPointGetMagnitude(CGPoint point)
+{
+  return KPDistanceBetweenCGPoint(CGPointZero, point);
+}
+CGPoint KPPointSetMagnitude(CGPoint point, CGFloat magnitude)
+{
+  return KPPointMultiplyScalar(KPPointNormalize(point), magnitude);
+}
 
-CGPoint KPPointMultiply(CGPoint a, CGPoint b) { return CGPointMake(a.x * b.x, a.y * b.y); }
-CGPoint KPPointDivide(CGPoint a, CGPoint b) { return CGPointMake(a.x / b.x, a.y / b.y); }
+CGPoint KPPointMultiply(CGPoint a, CGPoint b)
+{
+  return CGPointMake(a.x * b.x, a.y * b.y);
+}
+CGPoint KPPointDivide(CGPoint a, CGPoint b)
+{
+  return CGPointMake(a.x / b.x, a.y / b.y);
+}
 
-CGPoint KPRectGetMidPoint(CGRect rect) { return CGPointMake(CGRectGetMidX(rect), CGRectGetMidY(rect)); }
+CGPoint KPRectGetMidPoint(CGRect rect)
+{
+  return CGPointMake(CGRectGetMidX(rect), CGRectGetMidY(rect));
+}
+CGRect KPRectSetMidPoint(CGRect rect, CGPoint midPoint)
+{
+  return CGRectMake(midPoint.x - (rect.size.width / 2), midPoint.y - (rect.size.height / 2), rect.size.width, rect.size.height);
+}
 
-+ (UIColor *)colorFromHexString:(NSString *)hexString {
++ (UIColor *)colorFromHexString:(NSString *)hexString
+{
   unsigned int hexValue;
   NSScanner *scanner = [NSScanner scannerWithString:hexString];
   [scanner scanHexInt:&hexValue];
   return KP_COLOR_HEX(hexValue);
+}
+
+CGPoint KPRotatePointAroundPoint(CGPoint point, CGPoint rotationPoint, CGFloat theta)
+{
+  return CGPointMake(cos(theta) * (point.x - rotationPoint.x) - sin(theta) * (point.y - rotationPoint.y) + rotationPoint.x,
+                     sin(theta) * (point.x - rotationPoint.x) + cos(theta) * (point.y - rotationPoint.y) + rotationPoint.y);
+}
+
+NSInteger setOptionToValue(NSInteger options, NSInteger option, BOOL value)
+{
+  if (value) {
+    options |= option;
+  }
+  else {
+    options &= ~option;
+  }
+  return options;
+}
+
++ (NSString *)appVersion
+{
+  NSString *fullBundleVersion = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey];
+  NSArray *versionParts = [fullBundleVersion componentsSeparatedByString:@"_"];
+  return versionParts[1];
+}
+
++ (NSString *)appBuild
+{
+  return [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey];
 }
 
 @end
