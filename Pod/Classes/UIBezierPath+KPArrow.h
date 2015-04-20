@@ -13,10 +13,9 @@
 // https://gist.github.com/mayoff/4146780
 // http://stackoverflow.com/a/13559449/2437832
 + (UIBezierPath *)kp_bezierPathWithArrowFromPoint:(CGPoint)startPoint
-                                           toPoint:(CGPoint)endPoint
-                                         tailWidth:(CGFloat)tailWidth
-                                         headWidth:(CGFloat)headWidth
-                                        headLength:(CGFloat)headLength;
-
+                                          toPoint:(CGPoint)endPoint
+                                        tailWidth:(CGFloat)tailWidth
+                                        headWidth:(CGFloat)headWidth
+                                       headLength:(CGFloat)headLength;
 
 @end

@@ -53,7 +53,7 @@ static const NSUInteger kArrowPointCount = 7;
 + (CGAffineTransform)kp_transformForStartPoint:(CGPoint)startPoint endPoint:(CGPoint)endPoint length:(CGFloat)length {
   CGFloat cosine = (endPoint.x - startPoint.x) / length;
   CGFloat sine = (endPoint.y - startPoint.y) / length;
-  return (CGAffineTransform) {cosine, sine, -sine, cosine, startPoint.x, startPoint.y};
+  return (CGAffineTransform){cosine, sine, -sine, cosine, startPoint.x, startPoint.y};
 }
 
 @end
