@@ -10,7 +10,13 @@
 
 @implementation SCNNode (KPKit)
 
-- (GLKVector3)kp_glkPosition { return SCNVector3ToGLKVector3(self.position); }
-- (void)setKp_glkPosition:(GLKVector3)kp_glkPosition { self.position = SCNVector3FromGLKVector3(kp_glkPosition); }
+- (GLKVector3)kp_glkPosition
+{
+  return SCNVector3ToGLKVector3(self.position);
+}
+- (void)setKp_glkPosition:(GLKVector3)kp_glkPosition
+{
+  self.position = SCNVector3FromGLKVector3(kp_glkPosition);
+}
 
 @end

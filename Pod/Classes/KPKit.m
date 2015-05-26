@@ -14,7 +14,12 @@ const CGPoint KPPointOne = (CGPoint){.x = 1.0, .y = 1.0};
 // exclusive
 + (NSInteger)randomInt:(NSInteger)value
 {
-  return abs(((NSInteger)arc4random()) % value);
+  if (value == 0) {
+    return 0;
+  }
+  else {
+    return abs(((NSInteger)arc4random()) % value);
+  }
 }
 
 + (CGFloat)randomBetweenA:(CGFloat)a andB:(CGFloat)b

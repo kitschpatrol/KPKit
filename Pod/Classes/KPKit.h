@@ -69,6 +69,9 @@ extern const CGPoint KPPointOne;
 + (void)clearCacheDirectory;
 
 // Text
+
+//+ (NSString *)puralizeForQuantity:(CGFloat)quanZero:(NSString)zeroString one:(NSString *)oneString more:(NSString *)moreString;
+
 + (void)drawText:(NSAttributedString *)text onPath:(UIBezierPath *)path;
 + (void)drawText:(NSAttributedString *)text onPath:(UIBezierPath *)path inContext:(CGContextRef)context;
 + (void)drawText:(NSAttributedString *)text onPath:(UIBezierPath *)path inContext:(CGContextRef)context withAlignment:(NSTextAlignment)alignment;
