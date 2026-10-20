@@ -1,0 +1,34 @@
+{
+  "@context": "https://w3id.org/codemeta/3.1",
+  "@type": "SoftwareSourceCode",
+  "name": "KPKit",
+  "version": "2.0.0",
+  "description": "Library of utility methods bringing handy functions from openFrameworks and Processing to Cocoa.",
+  "author": {
+    "@type": "Person",
+    "email": "eric@ericmika.com",
+    "name": "Eric Mika",
+    "url": "https://ericmika.com"
+  },
+  "keywords": [
+    "ios",
+    "objective-c",
+    "cocoapods",
+    "utilities",
+    "openframeworks",
+    "processing"
+  ],
+  "programmingLanguage": "Objective-C",
+  "operatingSystem": ["iOS >= 12.0"],
+  "url": "https://github.com/kitschpatrol/KPKit",
+  "codeRepository": "https://github.com/kitschpatrol/KPKit.git",
+  "issueTracker": "https://github.com/kitschpatrol/KPKit/issues",
+  "license": "https://spdx.org/licenses/MIT",
+  "dateCreated": "2013-10-14",
+  "softwareRequirements": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "Xcode"
+    }
+  ]
+}

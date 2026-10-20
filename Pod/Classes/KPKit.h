@@ -25,7 +25,7 @@ extern const CGPoint KPPointOne;
 #define KP_IS_MULTITASKING                                                                                                                                     \
   ([[UIDevice currentDevice] respondsToSelector:@selector(isMultitaskingSupported)] && [[UIDevice currentDevice] isMultitaskingSupported])
 #define KP_COLOR_RGBA(r, g, b, a) [UIColor colorWithRed:r / 255.0f green:g / 255.0f blue:b / 255.0f alpha:a]
-#define KP_COLOR_RGB(r, g, b) LP_RGBA(r, g, b, 1.0f)
+#define KP_COLOR_RGB(r, g, b) KP_COLOR_RGBA(r, g, b, 1.0f)
 #define KP_COLOR_HEX(hex)                                                                                                                                      \
   [UIColor colorWithRed:((float)((hex & 0xFF0000) >> 16)) / 255.0 green:((float)((hex & 0xFF00) >> 8)) / 255.0 blue:((float)(hex & 0xFF)) / 255.0 alpha:1.0]
 
@@ -81,7 +81,7 @@ extern const CGPoint KPPointOne;
         withAlignment:(NSTextAlignment)alignment
     clockwiseBaseline:(BOOL)clockwiseBaseline;
 
-+ (void)logAvailabeFontNames;
++ (void)logAvailableFontNames;
 
 // Foundation type helpers
 CGFloat KPMagnitudeOfVector(CGVector vector);
@@ -100,7 +100,7 @@ CGFloat KPDistanceBetweenCGPoint(CGPoint startPoint, CGPoint endPoint);
 CGPoint KPLinearInterpolateBetweenCGPoint(CGPoint startPoint, CGPoint endPoint, CGFloat amount);
 CGPoint KPPolarToCartesian(CGFloat theta, CGFloat radius);
 
-CGRect KPSqareAroundPoint(CGPoint point, CGFloat side);
+CGRect KPSquareAroundPoint(CGPoint point, CGFloat side);
 CGRect KPRectAroundPoint(CGPoint point, CGSize size);
 
 CGPoint KPRectGetMidPoint(CGRect rect);

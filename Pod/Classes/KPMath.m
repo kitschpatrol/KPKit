@@ -101,8 +101,8 @@ long double __attribute__((overloadable)) KPDegreesToRadians(long double degrees
 
 void KPSwapCGFloat(CGFloat *a, CGFloat *b) {
   CGFloat swapTemp = *a;
-  *b = *a;
-  *a = swapTemp;
+  *a = *b;
+  *b = swapTemp;
 }
 
 CGFloat KPWrap(CGFloat value, CGFloat from, CGFloat to) {

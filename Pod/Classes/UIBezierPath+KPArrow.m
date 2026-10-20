@@ -9,7 +9,7 @@
 #import "UIBezierPath+KPArrow.h"
 #import "KPKit.h"
 
-static const NSUInteger kArrowPointCount = 7;
+enum { kArrowPointCount = 7 };
 
 @implementation UIBezierPath (KPArrow)
 

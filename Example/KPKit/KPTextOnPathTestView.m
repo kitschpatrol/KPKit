@@ -66,7 +66,7 @@ void drawCircleAtPoint(CGPoint point, UIColor *color) {
   CGFloat r, g, b, a;
   [color getRed:&r green:&g blue:&b alpha:&a];
 
-  CGContextSetFillColor(UIGraphicsGetCurrentContext(), (float[]) {r, g, b, a});
+  CGContextSetFillColor(UIGraphicsGetCurrentContext(), (CGFloat[]) {r, g, b, a});
   CGContextFillEllipseInRect(UIGraphicsGetCurrentContext(), CGRectMake(point.x - 2, point.y - 2, 4, 4));
 }
 

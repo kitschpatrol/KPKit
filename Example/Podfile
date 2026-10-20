@@ -1,10 +1,12 @@
-target 'KPKit', :exclusive => true do
-  pod "KPKit", :path => "../"
-end
+platform :ios, '12.0'
 
-target 'Tests', :exclusive => true do
+target 'KPKit' do
   pod "KPKit", :path => "../"
 
-  pod 'Specta', '~> 0.2.1'
-  pod 'Expecta'
+  target 'Tests' do
+    inherit! :search_paths
+
+    pod 'Specta', '~> 0.2.1'
+    pod 'Expecta'
+  end
 end

@@ -4,7 +4,7 @@
 #import "UIBezierPath+KPKit.h"
 #import "KPKit.h"
 
-// Pretty major mess... these should (maybe) be moved into descrete classes and / or categories eventually.
+// Pretty major mess... these should (maybe) be moved into discrete classes and / or categories eventually.
 const CGPoint KPPointOne = (CGPoint){.x = 1.0, .y = 1.0};
 
 @implementation KPKit
@@ -66,9 +66,9 @@ const CGPoint KPPointOne = (CGPoint){.x = 1.0, .y = 1.0};
 }
 
 + (UIColor *)randomColorWithAlpha:(CGFloat)alphaValue {
-  CGFloat red = (CGFloat)arc4random() / (CGFloat)RAND_MAX;
-  CGFloat blue = (CGFloat)arc4random() / (CGFloat)RAND_MAX;
-  CGFloat green = (CGFloat)arc4random() / (CGFloat)RAND_MAX;
+  CGFloat red = (CGFloat)arc4random() / (CGFloat)UINT32_MAX;
+  CGFloat blue = (CGFloat)arc4random() / (CGFloat)UINT32_MAX;
+  CGFloat green = (CGFloat)arc4random() / (CGFloat)UINT32_MAX;
   return [UIColor colorWithRed:red green:green blue:blue alpha:alphaValue];
 }
 
@@ -125,8 +125,8 @@ const CGPoint KPPointOne = (CGPoint){.x = 1.0, .y = 1.0};
             inContext:(CGContextRef)context
         withAlignment:(NSTextAlignment)alignment
     clockwiseBaseline:(BOOL)clockwiseBaseline {
-  NSAssert((alignment != NSTextAlignmentJustified), @"Justified text alginment not supported for drawing text on a path.");
-  NSAssert((alignment != NSTextAlignmentNatural), @"Natural text alginment not supported for drawing text on a path.");
+  NSAssert((alignment != NSTextAlignmentJustified), @"Justified text alignment not supported for drawing text on a path.");
+  NSAssert((alignment != NSTextAlignmentNatural), @"Natural text alignment not supported for drawing text on a path.");
 
   CGContextSaveGState(context);
 
@@ -209,7 +209,7 @@ const CGPoint KPPointOne = (CGPoint){.x = 1.0, .y = 1.0};
   CGContextRestoreGState(context);
 }
 
-+ (void)logAvailabeFontNames {
++ (void)logAvailableFontNames {
   for (NSString *family in [UIFont familyNames]) {
     NSLog(@"%@", family);
 
@@ -245,7 +245,7 @@ const CGPoint KPPointOne = (CGPoint){.x = 1.0, .y = 1.0};
   NSArray *cacheDirectory = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[[KPKit cacheDirectory] path] error:NULL];
   for (NSString *file in cacheDirectory) {
     NSLog(@"deleting: %@", file);
-    [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@%@", NSTemporaryDirectory(), file] error:NULL];
+    [[NSFileManager defaultManager] removeItemAtPath:[[[KPKit cacheDirectory] path] stringByAppendingPathComponent:file] error:NULL];
   }
 }
 
@@ -319,7 +319,7 @@ BOOL KPVectorEqualToVector(CGVector vectorA, CGVector vectorB) {
       return [self firstSuperviewOfView:view.superview thatIsKindOfClass:someClass];
     }
   } else {
-    // Rached the top... no superview of the class we want
+    // Reached the top... no superview of the class we want
     return nil;
   }
 }
@@ -429,9 +429,9 @@ CGFloat KPDistanceSquaredBetweenCGPoint(CGPoint startPoint, CGPoint endPoint) {
 
 CGFloat KPDistanceBetweenCGPoint(CGPoint startPoint, CGPoint endPoint) {
 #if CGFLOAT_IS_DOUBLE
-  return hypotf(endPoint.x - startPoint.x, endPoint.y - startPoint.y);
-#else
   return hypot(endPoint.x - startPoint.x, endPoint.y - startPoint.y);
+#else
+  return hypotf(endPoint.x - startPoint.x, endPoint.y - startPoint.y);
 #endif
 }
 
@@ -439,7 +439,7 @@ CGPoint KPLinearInterpolateBetweenCGPoint(CGPoint startPoint, CGPoint endPoint, 
   return CGPointMake(startPoint.x + ((endPoint.x - startPoint.x) * amount), startPoint.y + ((endPoint.y - startPoint.y) * amount));
 }
 
-CGRect KPSqareAroundPoint(CGPoint point, CGFloat side) {
+CGRect KPSquareAroundPoint(CGPoint point, CGFloat side) {
   return KPRectAroundPoint(point, CGSizeMake(side, side));
 }
 
